@@ -1,4 +1,4 @@
-# Giphy search app
+# Giphy search app using Flutter
 
 App that utilizes Giphy API's search endpoint
 
