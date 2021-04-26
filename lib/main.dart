@@ -26,12 +26,11 @@ class Home extends StatelessWidget {
  }
 
  class _BodyState extends State<Body> {
-    List listResponse;
+    List listResponse = [];
     String q;
     int currentOffset;
     Timer _debounce;
     String msg = "Nothing to see here!";
-
     ScrollController _scrollController = new ScrollController();
 
     Future getData(query) async{
@@ -41,7 +40,7 @@ class Home extends StatelessWidget {
         q = query;
         if (jsonDecode(data.body)["pagination"]["count"] == 0) {
           msg = "Can't find anything with that search keyword";
-          listResponse = null;
+          listResponse = [];
         }
         else listResponse = jsonDecode(data.body)["data"];
         }
@@ -49,7 +48,6 @@ class Home extends StatelessWidget {
     }
 
     Future addData(query) async{
-      print(currentOffset);
       var data =  await http.get(Uri.parse("https://api.giphy.com/v1/gifs/search?api_key=${env['GIPHY_KEY']}&q=$query&limit=10&offset=$currentOffset&rating=g&lang=en"));
       setState(() {
         List temp;
@@ -59,7 +57,6 @@ class Home extends StatelessWidget {
             listResponse.add(temp[i]);
           }
         currentOffset += 10;
-        print(listResponse.length);
       }}
       );
     }
@@ -108,28 +105,27 @@ class Home extends StatelessWidget {
                      border: OutlineInputBorder(),
                      hintText: "Search for GIF"
                    ),
-
                  ),
                ),
-               listResponse != null ? Expanded(
+              listResponse.isNotEmpty ? Expanded(
                  child: ListView.builder(
                    controller: _scrollController,
                    itemCount: listResponse.length,
                    itemBuilder: (context, index){
-                   return Card(
-                       child: FittedBox(
-                         child: Image.network(listResponse[index]['images']['original']['url']),
-                         fit: BoxFit.fill,
-                       )
+                   return Padding(
+                     padding: const EdgeInsets.all(9.0),
+                     child: Card(
+                         child: Image.network(listResponse[index]['images']['original']['url'], fit: BoxFit.fitWidth)
+                     ),
                    );
                  },
                  ),
                ) : Container(
-                 alignment: Alignment.center,
-                 child: Center(
-                   child: Text("$msg")
-                 ),
-               )
+                  alignment: Alignment.center,
+                  child: Center(
+                      child: Text("$msg")
+                  )
+              ),
               ]
            )
        ),
