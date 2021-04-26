@@ -112,6 +112,7 @@ class Home extends StatelessWidget {
                    controller: _scrollController,
                    itemCount: listResponse.length,
                    itemBuilder: (context, index){
+                     if (index == listResponse.length-1) return LinearProgressIndicator();
                    return Padding(
                      padding: const EdgeInsets.all(9.0),
                      child: Card(
